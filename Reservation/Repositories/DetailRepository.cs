@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using Core.Repositories;
 using Reservation.Data;
 using Reservation.Interfaces;
@@ -62,5 +62,39 @@ public class DetailRepository(
             Discount = detail.Discount,
             Currency = detail.Currency,
         };
+    }
+    
+    
+    public async Task<Detail> CreateDetailFromReservationAsync(Guid reservationId, DetailDTO detailDto)
+    {
+        var detail = new Detail
+        {
+            Id = Guid.NewGuid(),
+            ReservationId = reservationId,
+            Name = detailDto.Name,
+            Email = detailDto.Email,
+            Phone = detailDto.Phone,
+            NumberOfAdults = detailDto.NumberOfAdults,
+            NumberOfChildren = detailDto.NumberOfChildren,
+            NumberOfInfants = detailDto.NumberOfInfants,
+            NumberOfPets = detailDto.NumberOfPets,
+            ResourceQuantity = detailDto.ResourceQuantity,
+            Note = detailDto.Note,
+            OriginalPrice = detailDto.OriginalPrice,
+            Discount = detailDto.Discount,
+            Currency = detailDto.Currency,
+            IsActive = true,
+            IsDeleted = false,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+        };
+
+        await ExecuteAsync(
+            @"INSERT INTO ""Details"" (""Id"", ""ReservationId"", ""Name"", ""Email"", ""Phone"", ""NumberOfAdults"", ""NumberOfChildren"", ""NumberOfInfants"", ""NumberOfPets"", ""ResourceQuantity"", ""Note"", ""OriginalPrice"", ""Discount"", ""Currency"", ""IsActive"", ""IsDeleted"", ""CreatedAt"", ""UpdatedAt"")
+                   VALUES(@Id, @ReservationId, @Name, @Email, @Phone, @NumberOfAdults, @NumberOfChildren, @NumberOfInfants, @NumberOfPets, @ResourceQuantity, @Note, @OriginalPrice, @Discount, @Currency, @IsActive, @IsDeleted, @CreatedAt, @UpdatedAt)",
+            detail
+        );
+
+        return detail;
     }
 }
