@@ -1,0 +1,804 @@
+syntax = "proto3";
+
+package organization;
+option csharp_namespace = "OrganizationService";
+import "auth.proto";
+
+message DestinationDTO {
+  string id = 1;
+  string name = 2;
+  string slug = 3;
+  string description = 4;
+  int32 order = 5;
+  string location = 6;
+  repeated TagDTO tags = 7;
+  repeated OrganizationDTO organizations = 8;
+  repeated string pictures = 9;
+}
+
+message TagDTO {
+  string id = 1;
+  string name = 2;
+  string slug = 3;
+  string description = 4;
+  optional string picture = 5;
+  optional int32 positivityScore = 6;
+  optional string color = 7;
+}
+
+message GetTagsRequest {
+  optional string keyword = 1;
+  optional int32 page = 2;
+  optional int32 perPage = 3;
+  optional string OrderBy = 4;
+}
+
+message TagDTOList {
+  repeated TagDTO tags = 1;
+}
+
+message OrganizationUserDTO {
+  string id = 1;
+  string organizationId = 2;
+  string userId = 3;
+  string roleId = 4;
+  OrganizationDTO organization = 5;
+  UserRoleDTO role = 6;
+  UserDTO user = 7;
+  string sectionId = 9;
+
+}
+
+message DetailDTO {
+  string id = 1;
+  string organizationId = 2;
+  string description = 3;
+  optional string email = 4;
+  optional string phone = 5;
+  optional string website = 6;
+  optional string instagram = 7;
+  optional string facebook = 8;
+  optional string checkInTime = 9;
+  optional bool allowsAutoCheckIn = 10;
+  optional bool allowsLiveBooking = 11;
+  optional string liveBookingStart = 12;
+  optional string liveBookingEnd = 13;
+  optional string menu = 14;
+  optional string startDate = 15;
+  optional string endDate = 16;
+  optional string openTime = 17;
+  optional string closeTime = 18;
+  optional double lowestPrice = 19;
+  optional bool showMenuPrices = 20;
+  optional bool allowInClientApp = 21;
+  optional string afternoonStartTime = 22;
+}
+
+message OrganizationDTO {
+  string id = 1;
+  string name = 2;
+  string slug = 3;
+  string type_id = 4;
+  string destination_id = 5;
+  string location = 6;
+  double latitude = 7;
+  double longitude = 8;
+  int32 order = 9;
+  bool is_promoted = 10;
+  int32 number_of_resources = 11;
+  repeated TagDTO tags = 12;
+  repeated UserDTO users = 13;
+  DetailDTO details = 14;
+  repeated string pictures = 15;
+  repeated ReviewDTO reviews = 16;
+  DestinationDTO destination = 17;
+  UserRoleDTO role = 18;
+
+}
+
+message ReviewDTO {
+  string id = 1;
+  string organization_id = 2;
+  string user_id = 3;
+  int32 rating = 4;
+  string comment = 5;
+  string created_at = 6;
+  string updated_at = 7;
+  bool is_active = 8;
+}
+
+message GetByIdRequest {
+  string id = 1;
+}
+
+message GetDestinationsRequest {
+  optional string keyword = 1;
+  optional bool withOrganizations = 2;
+  optional int32 page = 3;
+  optional int32 perPage = 4;
+  optional string OrderBy = 5;
+}
+
+message GetOrganizationsRequest {
+  optional string keyword = 1;
+  optional string destinationId = 2;
+  optional bool withResources = 3;
+  optional bool withUsers = 4;
+  optional bool withDetail = 5;
+  optional bool withTags = 6;
+  optional bool withDestination = 7;
+  optional int32 page = 8;
+  optional int32 perPage = 9;
+  optional string OrderBy = 10;
+  optional bool only_allow_in_client_app = 11;
+}
+
+message GetReviewsByOrganizationIdRequest {
+  string organization_id = 1;
+}
+
+message GetUserOfOrganizationRequest  {
+  optional string organizationId = 1;
+  optional string userId = 2;
+
+}
+
+message GetOrganizationUserByUserIdRequest {
+  string userId = 1;
+}
+
+message GetReviewsRequest {
+  optional string keyword = 1;
+  optional int32 page = 2;
+  optional int32 perPage = 3;
+  optional string OrderBy = 4;
+}
+
+message DestinationDTOList {
+  repeated DestinationDTO destinations = 1;
+}
+
+message OrganizationDTOList {
+  repeated OrganizationDTO organizations = 1;
+}
+
+message Empty {}
+
+message StoryDTO {
+  string id = 1;
+  string title = 2;
+  string slug = 3;
+  string description = 4;
+  string picture = 5;
+  string link = 6;
+  string organizationId = 7;
+  string duration = 8;
+  string createdAt = 9;
+  string updatedAt = 10;
+  OrganizationDTO organization = 11;
+  int32 order = 12;
+}
+
+message GetStoriesRequest {
+  optional string keyword = 1;
+  optional string organizationId = 2;
+}
+
+message StoryDTOList {
+  repeated StoryDTO stories = 1;
+}
+
+message ReviewDTOList {
+  repeated ReviewDTO reviews = 1;
+}
+
+message TypeDTO {
+  string id = 1;
+  string name = 2;
+  string slug = 3;
+  string description = 4;
+  string picture = 5;
+}
+
+message GetTypesRequest {
+  optional string keyword = 1;
+  optional int32 page = 2;
+  optional int32 perPage = 3;
+  optional string OrderBy = 4;
+}
+
+message TypeDTOList {
+  repeated TypeDTO types = 1;
+}
+
+message UserRoleDTO {
+  string id = 1;
+  string name = 2;
+  string slug = 3;
+  string description = 4;
+  string picture = 5;
+}
+
+message GetUserRolesRequest {
+  optional string keyword = 1;
+  optional int32 page = 2;
+  optional int32 perPage = 3;
+  optional string OrderBy = 4;
+}
+
+message UserRoleDTOList {
+  repeated UserRoleDTO userRoles = 1;
+}
+
+message OrganizationUserDTOList {
+  repeated OrganizationUserDTO organizationUsers = 1;
+}
+
+message UserDTO {
+  string id = 1;
+  string username = 2;
+  string password = 3;
+  string RoleId = 4;
+  string email = 5;
+  string phoneNumber = 6;
+  string oneTimePassword = 7;
+  string notificationId = 8;
+  string provider = 9;
+  UserRoleDTO role = 10;
+  string app = 11;
+  DetailDTO detail = 12;
+}
+
+message UserRegisterDto {
+  string name = 1;
+  string surname = 2;
+  string roleId = 3;
+  string organizationId = 4;
+  string password = 5;
+  string phoneNumber = 6;
+  string email = 7;
+  UserRoleDTO role = 8;
+  string sectionId = 9;
+}
+message BusinessRegisterRequestDTO {
+  string businessName = 1;
+  string description = 2;
+  string phone = 3;
+}
+
+message GetTodaysBalanceRequest {
+  string organizationId = 1;
+  string userID = 2;
+}
+
+message GetTodaysBalanceResponse {
+  int32 reservedUmbrellas = 1;
+  double earnings = 2;
+  double occupancy = 3;
+  string startDate = 4;   
+  string endDate = 5;
+}
+
+message GetDevPosKeysForOrgResponse {
+  string organizationId = 1;
+  string devUsername = 2;
+  string devPassword = 3;
+  string NUIS = 4;
+  string tcrCode = 5;
+  string businessUnitCode = 6;
+  string operatorCode = 7;
+  string sellerAddress = 8;
+  string sellerTown = 9;
+}
+
+// Menu Item related messages
+message GetMenuItemsByOrganizationRequest {
+  string organization_id = 1;
+}
+
+message GetMenuItemsResponse {
+  repeated MenuItemResponse items = 1;
+}
+
+message GetMenuItemByIdRequest {
+  string id = 1;
+}
+
+message CreateMenuItemRequest {
+  string name = 1;
+  double price = 2;
+  int32 quantity = 3;
+  string description = 4;
+  string organization_id = 5;
+  string category_id = 6;
+  string slug = 7;
+  int32 order = 8;
+  repeated string pictures = 9; // Base64 encoded images
+}
+
+message UpdateMenuItemRequest {
+  string id = 1;
+  string name = 2;
+  double price = 3;
+  int32 quantity = 4;
+  string description = 5;
+  string organization_id = 6;
+  string category_id = 7;
+  string slug = 8;
+  int32 order = 9;
+  repeated string pictures = 10; // Base64 encoded images
+}
+
+message MenuItemResponse {
+  string id = 1;
+  string name = 2;
+  double price = 3;
+  int32 quantity = 4;
+  string description = 5;
+  string organization_id = 6;
+  string category_id = 7;
+  string slug = 8;
+  int32 order = 9;
+  repeated string pictures = 10; // URLs to images
+  string created_at = 11;
+  string updated_at = 12;
+  bool is_active = 13;
+  MenuCategoryResponse category = 14;
+}
+
+message DeleteMenuItemRequest {
+  string id = 1;
+}
+
+message DeleteMenuItemResponse {
+  bool success = 1;
+}
+
+// Menu Category related messages
+message GetMenuCategoriesByOrganizationRequest {
+  string organization_id = 1;
+}
+
+message GetMenuCategoriesResponse {
+  repeated MenuCategoryResponse categories = 1;
+}
+
+message GetMenuCategoryByIdRequest {
+  string id = 1;
+}
+
+message CreateMenuCategoryRequest {
+  string name = 1;
+  string organization_id = 2;
+  int32 order = 3;
+}
+
+message UpdateMenuCategoryRequest {
+  string id = 1;
+  string name = 2;
+  string organization_id = 3;
+  int32 order = 4;
+}
+
+message MenuCategoryResponse {
+  string id = 1;
+  string name = 2;
+  string organization_id = 3;
+  int32 order = 4;
+  string created_at = 5;
+  string updated_at = 6;
+  bool is_active = 7;
+}
+
+message DeleteMenuCategoryRequest {
+  string id = 1;
+}
+
+message DeleteMenuCategoryResponse {
+  bool success = 1;
+}
+
+message GetOrganizationBySlugRequest {
+  string slug = 1;
+}
+
+// --- Order Status DTO ---
+message OrderStatusDTO {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message OrderStatusDTOList {
+  repeated OrderStatusDTO statuses = 1;
+}
+
+// --- Order Menu Item DTO ---
+message OrderMenuItemDTO {
+  string id = 1;
+  string orderId = 2;
+  string menuItemId = 3;
+  string menuItemName = 4;
+  int32 quantity = 5;
+  double price = 6;
+  string notes = 7;
+}
+
+// --- Order DTO ---
+message OrderDTO {
+  string id = 1;
+  string organizationId = 2;
+  string statusId = 3;
+  string statusName = 4;
+  double totalPrice = 5;
+  bool isNotificationOpened = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+  repeated OrderMenuItemDTO items = 9;
+  string createdBy = 10;
+  string resourceId = 11;
+  ResourceDTO resource = 12;
+  string assignedToUserId = 13;
+  OrganizationUserDTO assignedToUser = 14;
+}
+
+// --- Requests/Responses ---
+message GetOrdersByOrganizationRequest {
+  string organizationId = 1;
+  string date = 2; // ISO string
+  optional string statusId = 3;
+  optional string userId = 4;
+}
+
+message GetOrdersByUserRequest {
+  string date = 1;  // ISO string
+  string userId = 2;
+  optional string statusId = 3;
+}
+
+message GetOrderByIdRequest {
+  string id = 1;
+}
+message OrderDTOList {
+  repeated OrderDTO orders = 1;
+}
+message CreateOrderRequest {
+  string organizationId = 1;
+  double totalPrice = 2;
+  repeated OrderMenuItemDTO items = 3;
+  string userId = 4;
+  string resourceId = 5;
+}
+message CreateOrderMenuItemRequest {
+  string menuItemId = 1;
+  int32 quantity = 2;
+  double price = 3;
+  string notes = 4;
+}
+message UpdateOrderRequest {
+  string id = 1;
+  string statusId = 2;
+  bool isNotificationOpened = 3;
+  string userId = 4;
+  string resourceId = 5;
+}
+message DeleteOrderRequest {
+  string id = 1;
+}
+message DeleteOrderResponse {
+  bool success = 1;
+}
+
+// --- Organization Preferences DTO ---
+message OrganizationPreferencesDTO {
+  string id = 1;
+  string organizationId = 2;
+  bool allowOnlineBooking = 3;
+  bool requirePhoneNumber = 4;
+  bool restrictTicketCancellationToAdminAndManager = 5;
+  bool requireCustomerName = 6;
+  bool enableAutomaticNotifications = 7;
+  bool allowGuestBooking = 8;
+  bool showAvailabilityOnMap = 9;
+  bool enableMenuOrdering = 10;
+}
+
+message CreateOrganizationPreferencesRequest {
+  string organizationId = 1;
+  bool allowOnlineBooking = 2;
+  bool requirePhoneNumber = 3;
+  bool restrictTicketCancellationToAdminAndManager = 4;
+  bool requireCustomerName = 5;
+  bool enableAutomaticNotifications = 6;
+  bool allowGuestBooking = 7;
+  bool showAvailabilityOnMap = 8;
+  bool enableMenuOrdering = 9;
+}
+
+message UpdateOrganizationPreferencesRequest {
+  string organizationId = 1;
+  bool allowOnlineBooking = 2;
+  bool requirePhoneNumber = 3;
+  bool restrictTicketCancellationToAdminAndManager = 4;
+  bool requireCustomerName = 5;
+  bool enableAutomaticNotifications = 6;
+  bool allowGuestBooking = 7;
+  bool showAvailabilityOnMap = 8;
+  bool enableMenuOrdering = 9;
+}
+
+message OrganizationPreferencesResponse {
+  OrganizationPreferencesDTO preferences = 1;
+}
+
+message OnboardDTO {
+  string id = 1;
+  optional string name = 2;
+  optional string description = 3;
+  optional int32 nrofsunbeds = 4;
+  optional string pictureofresourcemap = 5;
+  optional string pictureofmenu = 6;
+  optional string startingHour = 7;
+  optional string endingHour = 8;
+  optional string seasonStart = 9;
+  optional string seasonEnd = 10;
+  optional bool allowsAutocheckin = 11;
+  optional bool allowsLivebooking = 12;
+  optional string facebook = 13;
+  optional string instagram = 14;
+  optional string website = 15;
+  optional string contactNumberForSunbeds = 16;
+  optional string contactNumberForSocialMedia = 17;
+  optional string tikTok = 18;
+  optional string notes = 19;
+}
+
+message OnboardDTOList {
+  repeated OnboardDTO onboards = 1;
+}
+
+message GetOnboardByIdRequest {
+  string id = 1;
+}
+
+message EmptyOnboard {}
+
+message GetOrdersByOrganizationResponse {
+  repeated OrderDTO orders = 1;
+}
+
+message ResourceDTO {
+  string id = 1;
+  string organizationId = 2;
+  string typeId = 3;
+  string statusId = 4;
+  string categoryId = 5;
+  string subcategoryId = 6;
+  double price = 7;
+  string currency = 8;
+  string number = 9;
+  double latitude = 10;
+  double longitude = 11;
+  string slug = 12;
+  string sectionId = 13;
+}
+
+message CouponDTO {
+  string id = 1;
+  string code = 2;
+  string user_id = 3;
+  int32 quantity = 4;
+  double discount_value = 5;
+  string discount_type = 6; 
+  string slug = 7;
+  string description = 8;
+  string organization_id = 9;
+  string expiration_date = 10;
+  bool is_active = 11;
+  double min_order_value = 12;
+}
+
+message CreateCouponRequest {
+  CouponDTO coupon = 1;
+}
+
+message UpdateCouponRequest {
+  CouponDTO coupon = 1;
+}
+
+message DeleteCouponRequest {
+  string id = 1;
+}
+
+message GetCouponByIdRequest {
+  string id = 1;
+}
+
+message GetCouponsRequest {
+  optional string organization_id = 1;
+  optional string keyword = 2;
+  optional int32 page = 3;
+  optional int32 perPage = 4;
+  optional string orderBy = 5;
+}
+
+message CouponDTOList {
+  repeated CouponDTO coupons = 1;
+}
+
+message ValidateCouponRequest {
+  string code = 1;
+  string organization_id = 2;
+  double order_value = 3;
+}
+
+message ValidateCouponResponse {
+  bool is_valid = 1;
+  string message = 2;
+  CouponDTO coupon = 3;
+}
+
+message CreateReviewRequest {
+  ReviewDTO review = 1;
+}
+
+message UpdateReviewRequest {
+  ReviewDTO review = 1;
+}
+
+message DeleteReviewRequest {
+  string id = 1;
+}
+
+message GetReviewByIdRequest {
+  string id = 1;
+}
+
+message GetOrganizationUsersSummaryRequest {
+  string organizationId = 1;
+  string startDate = 2;
+  string endDate = 3;
+}
+
+message UserSummary {
+  auth.DetailDto userDetail = 1;
+  double totalAmount = 2;
+}
+
+message GetOrganizationUsersSummaryResponse {
+  repeated UserSummary users = 1;
+}
+
+message ReassignOrderRequest {
+  string orderId = 1;
+  string assignedToUserId = 2;
+}
+
+message ReassignOrderResponse {
+  OrganizationUserDTO assignedToUser = 1;
+}
+
+message GenerateReportRequest {
+  string organizationId = 1;
+  string startDate = 2;
+  string endDate = 3;
+  string reportType = 4;
+}
+
+message GenerateReportResponse {
+  bytes fileContent = 1;
+  string fileName = 2;
+}
+
+service OrganizationService {
+  // Destinations
+  rpc CreateDestination(DestinationDTO) returns (DestinationDTO);
+  rpc UpdateDestination(DestinationDTO) returns (DestinationDTO);
+  rpc DeleteDestination(DestinationDTO) returns (Empty);
+  rpc GetDestinationById(GetByIdRequest) returns (DestinationDTO);
+  rpc GetDestinations(GetDestinationsRequest) returns (DestinationDTOList);
+  // Organizations
+  rpc CreateOrganization(OrganizationDTO) returns (OrganizationDTO);
+  rpc UpdateOrganization(OrganizationDTO) returns (OrganizationDTO);
+  rpc DeleteOrganization(OrganizationDTO) returns (Empty);
+  rpc GetOrganizationById(GetByIdRequest) returns (OrganizationDTO);
+  rpc GetOrganizations(GetOrganizationsRequest) returns (OrganizationDTOList);
+  // details
+  rpc GetOrganizationDetails(OrganizationDTO) returns (OrganizationDTO);
+  // Stories
+  rpc CreateStory(StoryDTO) returns (StoryDTO);
+  rpc UpdateStory(StoryDTO) returns (StoryDTO);
+  rpc DeleteStory(StoryDTO) returns (Empty);
+  rpc GetStoryById(GetByIdRequest) returns (StoryDTO);
+  rpc GetStories(GetStoriesRequest) returns (StoryDTOList);
+  // Reviews
+  rpc CreateReview(CreateReviewRequest) returns (ReviewDTO);
+  rpc UpdateReview(UpdateReviewRequest) returns (ReviewDTO);
+  rpc DeleteReview(DeleteReviewRequest) returns (Empty);
+  rpc GetReviewById(GetReviewByIdRequest) returns (ReviewDTO);
+  rpc GetReviewsByOrganizationId(GetReviewsByOrganizationIdRequest) returns (ReviewDTOList);
+  rpc GetReviews(GetReviewsRequest) returns (ReviewDTOList);
+  // Tags
+  rpc CreateTag(TagDTO) returns (TagDTO);
+  rpc UpdateTag(TagDTO) returns (TagDTO);
+  rpc DeleteTag(TagDTO) returns (Empty);
+  rpc GetTagById(GetByIdRequest) returns (TagDTO);
+  rpc GetTags(GetTagsRequest) returns (TagDTOList);
+  // Types
+  rpc CreateType(TypeDTO) returns (TypeDTO);
+  rpc UpdateType(TypeDTO) returns (TypeDTO);
+  rpc DeleteType(TypeDTO) returns (Empty);
+  rpc GetTypeById(GetByIdRequest) returns (TypeDTO);
+  rpc GetTypes(GetTypesRequest) returns (TypeDTOList);
+  // UserRoles
+  rpc CreateUserRole(UserRoleDTO) returns (UserRoleDTO);
+  rpc UpdateUserRole(UserRoleDTO) returns (UserRoleDTO);
+  rpc DeleteUserRole(UserRoleDTO) returns (Empty);
+  rpc GetUserRoleById(GetByIdRequest) returns (UserRoleDTO);
+  rpc GetUserRoles(GetUserRolesRequest) returns (UserRoleDTOList);
+  //OrganizationUsers
+  rpc CreateUserOfOrganization(UserRegisterDto) returns (UserRegisterDto);
+  rpc UpdateUserOfOrganization(OrganizationUserDTO) returns (OrganizationUserDTO);
+  rpc DeleteUserOfOrganization(UserDTO) returns (Empty);
+  rpc GetUserOfOrganizationById(GetByIdRequest) returns (OrganizationUserDTO);
+  rpc GetUserOfOrganizations(GetUserOfOrganizationRequest) returns (OrganizationUserDTOList);
+  rpc GetOrganizationUserByUserId(GetOrganizationUserByUserIdRequest) returns (OrganizationUserDTO);
+  rpc GetOrganizationForuser(GetByIdRequest) returns (OrganizationDTO);
+  rpc BusinessRegisterRequest(BusinessRegisterRequestDTO) returns (Empty);
+
+  rpc GetTodaysBalance(GetTodaysBalanceRequest) returns (GetTodaysBalanceResponse);
+  rpc GetDevPosKeysForOrg(GetByIdRequest) returns (GetDevPosKeysForOrgResponse);
+
+  // Menu Item methods
+  rpc GetMenuItemsByOrganization (GetMenuItemsByOrganizationRequest) returns (GetMenuItemsResponse);
+  rpc GetMenuItemById (GetMenuItemByIdRequest) returns (MenuItemResponse);
+  rpc CreateMenuItem (CreateMenuItemRequest) returns (MenuItemResponse);
+  rpc UpdateMenuItem (UpdateMenuItemRequest) returns (MenuItemResponse);
+  rpc DeleteMenuItem (DeleteMenuItemRequest) returns (DeleteMenuItemResponse);
+  
+  // Menu Category methods
+  rpc GetMenuCategoriesByOrganization (GetMenuCategoriesByOrganizationRequest) returns (GetMenuCategoriesResponse);
+  rpc GetMenuCategoryById (GetMenuCategoryByIdRequest) returns (MenuCategoryResponse);
+  rpc CreateMenuCategory (CreateMenuCategoryRequest) returns (MenuCategoryResponse);
+  rpc UpdateMenuCategory (UpdateMenuCategoryRequest) returns (MenuCategoryResponse);
+  rpc DeleteMenuCategory (DeleteMenuCategoryRequest) returns (DeleteMenuCategoryResponse);
+
+  rpc GetOrganizationBySlug(GetOrganizationBySlugRequest) returns (OrganizationDTO);
+
+  // Orders
+  rpc GetOrdersByOrganization(GetOrdersByOrganizationRequest) returns (OrderDTOList);
+  rpc GetOrderById(GetOrderByIdRequest) returns (OrderDTO);
+  rpc CreateOrder(CreateOrderRequest) returns (OrderDTO);
+  rpc UpdateOrder(UpdateOrderRequest) returns (OrderDTO);
+  rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse);
+
+  // Order Statuses
+  rpc GetOrderStatuses(Empty) returns (OrderStatusDTOList);
+  rpc CreateOrderStatus(OrderStatusDTO) returns (OrderStatusDTO);
+  rpc UpdateOrderStatus(OrderStatusDTO) returns (OrderStatusDTO);
+  rpc DeleteOrderStatus(GetByIdRequest) returns (Empty);
+
+  rpc GetOrganizationPreferences(GetByIdRequest) returns (OrganizationPreferencesResponse);
+  rpc UpdateOrganizationPreferences(UpdateOrganizationPreferencesRequest) returns (OrganizationPreferencesResponse);
+  // Onboard
+  rpc CreateOnboard(OnboardDTO) returns (OnboardDTO);
+  rpc UpdateOnboard(OnboardDTO) returns (OnboardDTO);
+  rpc DeleteOnboard(OnboardDTO) returns (EmptyOnboard);
+  rpc GetOnboardById(GetOnboardByIdRequest) returns (OnboardDTO);
+  rpc GetOnboards(EmptyOnboard) returns (OnboardDTOList);
+
+  rpc GetOrdersByUser(GetOrdersByUserRequest) returns (OrderDTOList);
+
+  rpc CreateCoupon(CreateCouponRequest) returns (CouponDTO);
+  rpc UpdateCoupon(UpdateCouponRequest) returns (CouponDTO);
+  rpc DeleteCoupon(DeleteCouponRequest) returns (Empty);
+  rpc GetCouponById(GetCouponByIdRequest) returns (CouponDTO);
+  rpc GetCoupons(GetCouponsRequest) returns (CouponDTOList);
+  rpc ValidateCoupon(ValidateCouponRequest) returns (ValidateCouponResponse);
+
+  rpc GetOrganizationUsersSummary(GetOrganizationUsersSummaryRequest) returns (GetOrganizationUsersSummaryResponse);
+
+  rpc ReassignOrder(ReassignOrderRequest) returns (ReassignOrderResponse);
+
+  rpc GenerateReport(GenerateReportRequest) returns (GenerateReportResponse);
+}

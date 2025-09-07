@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+package geolocation;
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "GeolocationService";

@@ -1,0 +1,411 @@
+syntax = "proto3";
+
+package resource;
+
+option csharp_namespace = "ResourceService";
+import "media.proto"; 
+import "payment.proto";
+import "reservation.proto"; 
+
+// Resource DTOs
+message ResourceDTO {
+  string id = 1;
+  string organizationId = 2;
+  string typeId = 3;
+  string statusId = 4;
+  string categoryId = 5;
+  string subcategoryId = 6;
+  double price = 7;
+  optional double afternoonPrice = 23;
+  string currency = 8;
+  string number = 9;
+  double latitude = 10;
+  double longitude = 11;
+  OrganizationDTO organization = 12;
+  TypeDTO type = 13;
+  StatusDTO status = 14;
+  CategoryDTO category = 15;
+  SubcategoryDTO subcategory = 16;
+  string slug = 17;
+  string sectionId = 18;
+  SectionDTO section = 19;
+  FullPriceDTO fullPrice = 20;
+  repeated media.MediaDto medias = 21;
+  repeated reservation.ReservationDTO reservations = 22;
+
+}
+
+// Organization DTO
+message DetailDTO {
+  string id = 1;
+  string organizationId = 2;
+  string description = 3;
+  string email = 4;
+  string phone = 5;
+  string website = 6;
+  string instagram = 7;
+  string facebook = 8;
+  string checkInTime = 9;
+  bool allowsAutoCheckIn = 10;
+  bool allowsLiveBooking = 11;
+  string liveBookingStart = 12;
+  string liveBookingEnd = 13;
+  string menu = 14;
+  string startDate = 15;
+  string endDate = 16;
+  string openTime = 17;
+  string closeTime = 18;
+}
+
+message OrganizationDTO {
+  string id = 1;
+  string name = 2;
+  string slug = 3;
+  string type_id = 4;
+  string destination_id = 5;
+  string location = 6;
+  double latitude = 7;
+  double longitude = 8;
+  int32 order = 9;
+  bool is_promoted = 10;
+  int32 number_of_resources = 11;
+  repeated TagDTO tags = 12;
+  DetailDTO details = 14;
+  repeated string pictures = 15;
+}
+
+// Reservation DTOs
+message ReservationDTO {
+  string id = 1;
+  string userId = 2;
+  string organizationId = 3;
+  string paymentTypeId = 4;
+  string reservationStatusId = 5;
+  double totalAmount = 6;
+  string code = 7;
+  string startDate = 8;
+  string endDate = 9;
+  int32 numberOfAdults = 10;
+  int32 numberOfChildren = 11;
+  int32 numberOfInfants = 12;
+  int32 numberOfPets = 13;
+  int32 resourceQuantity = 14;
+  string note = 15;
+  bool isFromOrganization = 16;
+  string name = 17;
+  string phone = 18;
+  OrganizationDTO organization = 20;
+  repeated ResourceDTO resources = 23;
+}
+
+message ReservationResourceDTO {
+  string id = 1;
+  string reservationId = 2;
+  string resourceId = 3;
+  ReservationDTO reservation = 4;
+  ResourceDTO resource = 5;
+}
+
+// Resource Price DTO
+message PriceDTO {
+  string id = 1;
+  string resourceId = 2;
+  double value = 3;
+  optional double afternoonValue = 13;
+  string currency = 4;
+  string description = 5;
+  string startDate = 6;
+  string endDate = 7;
+  bool isRecurrent = 8;
+  string recurrentDay = 9;
+  FullPriceDTO fullPrice = 10;
+  ResourceDTOList resource = 11;
+  repeated string resourceIds = 12;
+
+}
+
+
+message FullPriceDTO {
+  double originalPrice = 1;
+  double fullPrice = 2;
+  double organizationCommission = 3;
+  double clientCommission = 4;
+  double serviceFee = 5;
+  double fullPriceExcludedClientCommission = 6;
+  double fullPriceExcludedOrganizationCommission = 7;
+  double vatTax = 8;
+  double vatAmount = 9;
+  double priceBeforeVat = 10;
+  double clientNetValue = 11;
+  double clientGrossValue = 12;
+  double organizationNetValue = 13;
+  double organizationGrossValue = 14;
+  double platformNetProfit = 15;
+  optional double discountedPrice = 16;
+  optional double discountPercentage = 17;
+  optional string discountDescription = 18;
+  optional string organizationName = 19;
+}
+
+// Other DTOs
+message NameDescriptionDTO {
+  string name = 1;
+  string description = 2;
+}
+
+message TagDTO {
+  string id = 1;
+  string name = 2;
+  string slug = 3;
+  string description = 4;
+  string picture = 5;
+  int32 positivityScore = 6;
+}
+
+message CategoryDTO {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string slug = 4;
+  string picture = 5;
+}
+
+message SubcategoryDTO {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string categoryId = 4;
+  string slug = 5;
+}
+
+message TypeDTO {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string slug = 4;
+}
+
+message StatusDTO {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string slug = 4;
+  string color = 5;
+}
+
+message SectionDTO {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string slug = 4;
+  string organizationId = 5;
+  string organizationName = 6;
+}
+
+// Requests
+message GetByIdRequest {
+  string id = 1;
+}
+
+message GetResourcesRequest {
+  string keyword = 1;
+  string organizationId = 2;
+  string typeId = 3;
+  string categoryId = 4;
+  string subcategoryId = 5;
+  double minPrice = 6;
+  double maxPrice = 7;
+  string currency = 8;
+  double latitude = 9;
+  double longitude = 10;
+  int32 page = 11;
+  int32 perPage = 12;
+  string OrderBy = 13;
+  string statusId = 14;
+  string sectionId = 15;
+  repeated GetByIdRequest resources = 16;
+  bool withReservations = 17;
+  string startDate = 18;  
+  string endDate = 19; 
+  repeated string resourceIds = 20;
+}
+
+message GetPricesRequest {
+  string startDate = 1;
+  string endDate = 2;
+  repeated string resources = 3;
+  bool withDefaultPrices = 4;
+}
+
+message GetCategoriesRequest {
+  string keyword = 1;
+  int32 page = 2;
+  int32 perPage = 3;
+  string OrderBy = 4;
+}
+
+message GetSubcategoriesRequest {
+  string keyword = 1;
+  int32 page = 2;
+  int32 perPage = 3;
+  string OrderBy = 4;
+}
+
+message GetTypesRequest {
+  string keyword = 1;
+  int32 page = 2;
+  int32 perPage = 3;
+  string OrderBy = 4;
+}
+
+message GetStatusesRequest {
+  string keyword = 1;
+  int32 page = 2;
+  int32 perPage = 3;
+  string OrderBy = 4;
+}
+
+message GetSectionsRequest {
+  string keyword = 1;
+  int32 page = 2;
+  int32 perPage = 3;
+  string OrderBy = 4;
+  optional string organizationId = 5;
+}
+
+// Lists
+message ResourceDTOList {
+  repeated ResourceDTO resources = 1;
+}
+
+message PriceDTOList {
+  repeated PriceDTO Prices = 1;
+}
+
+message CategoryDTOList {
+  repeated CategoryDTO Categories = 1;
+}
+
+message SubcategoryDTOList {
+  repeated SubcategoryDTO Subcategories = 1;
+}
+
+message TypeDTOList {
+  repeated TypeDTO Types = 1;
+}
+
+message StatusDTOList {
+  repeated StatusDTO statuses = 1;
+}
+
+message SectionDTOList {
+  repeated SectionDTO sections = 1;
+}
+
+message GetPricesRequestList {
+  repeated GetPricesRequest getPricesRequest = 1;
+}
+
+message DeleteResourceRequest {
+  string id = 1;
+}
+message GetBySlugRequest {
+  string slug = 1;
+  bool available = 2;
+}
+
+message Empty {}
+
+// Live Availability Map DTOs
+message OrganizationResourceAvailabilityDTO {
+  string id = 1;
+  string organizationId = 2;
+  string typeId = 3;
+  string statusId = 4;
+  string categoryId = 5;
+  string subcategoryId = 6;
+  double price = 7;
+  optional double afternoonPrice = 21;
+  string currency = 8;
+  string number = 9;
+  double latitude = 10;
+  double longitude = 11;
+  string slug = 12;
+  string sectionId = 13;
+  SectionDTO section = 14;
+  bool isAvailable = 15;
+  repeated reservation.ReservationDTO reservations = 16;
+  TypeDTO type = 17;
+  StatusDTO status = 18;
+  CategoryDTO category = 19;
+  SubcategoryDTO subcategory = 20;
+}
+
+message GetResourcesByOrganizationSlugRequest {
+  string slug = 1;
+  string date = 2;
+}
+
+message OrganizationResourceAvailabilityList {
+  repeated OrganizationResourceAvailabilityDTO resources = 1;
+}
+
+// Service
+service ResourceService {
+    // Resources
+    rpc CreateResource(ResourceDTO) returns (ResourceDTO);
+    rpc UpdateResource(ResourceDTOList) returns (ResourceDTOList);
+    rpc DeleteResource(DeleteResourceRequest) returns (Empty);
+    rpc GetResourceById(GetByIdRequest) returns (ResourceDTO);
+    rpc GetResources(GetResourcesRequest) returns (ResourceDTOList);
+    rpc GetResourceBySlug(GetBySlugRequest) returns (ResourceDTO);
+
+    // Categories
+    rpc CreateCategory(CategoryDTO) returns (CategoryDTO);
+    rpc UpdateCategory(CategoryDTO) returns (CategoryDTO);
+    rpc DeleteCategory(DeleteResourceRequest) returns (Empty);
+    rpc GetCategoryById(GetByIdRequest) returns (CategoryDTO);
+    rpc GetCategories(GetCategoriesRequest) returns (CategoryDTOList);
+
+    // Subcategories
+    rpc CreateSubcategory(SubcategoryDTO) returns (SubcategoryDTO);
+    rpc UpdateSubcategory(SubcategoryDTO) returns (SubcategoryDTO);
+    rpc DeleteSubcategory(DeleteResourceRequest) returns (Empty);
+    rpc GetSubcategoryById(GetByIdRequest) returns (SubcategoryDTO);
+    rpc GetSubcategories(GetSubcategoriesRequest) returns (SubcategoryDTOList);
+
+    // Types
+    rpc CreateType(TypeDTO) returns (TypeDTO);
+    rpc UpdateType(TypeDTO) returns (TypeDTO);
+    rpc DeleteType(DeleteResourceRequest) returns (Empty);
+    rpc GetTypeById(GetByIdRequest) returns (TypeDTO);
+    rpc GetTypes(GetTypesRequest) returns (TypeDTOList);
+
+    // Statuses
+    rpc CreateStatus(StatusDTO) returns (StatusDTO);
+    rpc UpdateStatus(StatusDTO) returns (StatusDTO);
+    rpc DeleteStatus(DeleteResourceRequest) returns (Empty);
+    rpc GetStatusById(GetByIdRequest) returns (StatusDTO);
+    rpc GetStatuses(GetStatusesRequest) returns (StatusDTOList);
+
+    // Prices
+    rpc CreatePrice(PriceDTO) returns (PriceDTOList);
+    rpc UpdatePrice(PriceDTO) returns (PriceDTO);
+    rpc DeletePrice(DeleteResourceRequest) returns (Empty);
+    rpc GetPriceById(GetByIdRequest) returns (PriceDTO);
+    rpc GetPrices(GetPricesRequest) returns (PriceDTOList);
+
+    // Sections
+    rpc CreateSection(SectionDTO) returns (SectionDTO);
+    rpc UpdateSection(SectionDTO) returns (SectionDTO);
+    rpc DeleteSection(DeleteResourceRequest) returns (Empty);
+    rpc GetSectionById(GetByIdRequest) returns (SectionDTO);
+    rpc GetSections(GetSectionsRequest) returns (SectionDTOList);
+
+    // Custom Queries
+    rpc GetPricesFromLastThreeMonths(GetPricesRequestList) returns (PriceDTOList);
+    rpc GetPricesCalendar(PriceDTO) returns (payment.FullPriceDTOList);
+
+    // Live Availability Map endpoints
+    rpc GetResourcesByOrganizationSlug(GetResourcesByOrganizationSlugRequest) returns (OrganizationResourceAvailabilityList);
+}

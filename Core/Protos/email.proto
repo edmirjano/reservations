@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package email;
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "EmailService";
+
+// ========== Campaign DTO ==========
+message CampaignDto {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  google.protobuf.Timestamp start_date = 4;
+  google.protobuf.Timestamp end_date = 5;
+}
+
+// ========== Template DTO ==========
+message TemplateDto {
+  string id = 1;
+  string name = 2;
+  string body = 3;
+}
+
+// ========== Email DTO ==========
+message EmailDto {
+  string id = 1;
+  string to = 2;
+  string cc = 3;
+  string bcc = 4;
+  string from = 5;
+  string subject = 6;
+  string body = 7;
+  bool is_sent = 8;
+  bool is_read = 9;
+  string error = 10;
+  google.protobuf.Timestamp send_date = 11;
+  string email_campaign_id = 12;
+  string email_template_id = 13;
+  string campaign_id = 14;
+  string template_id = 15;
+  repeated string attachments = 16;
+}
+
+// ========== Request & Response DTOs ==========
+message CampaignDtoList {
+  repeated CampaignDto campaigns = 1;
+}
+
+message TemplateDtoList {
+  repeated TemplateDto templates = 1;
+}
+
+message DeleteRequest {
+  string id = 1;
+}
+
+message GetCampaignsRequest {
+  optional string id = 1;  
+  optional string name = 2;
+}
+
+// Template-related requests
+message GetTemplatesRequest {
+  optional string id = 1;  
+  optional string name = 2;
+}
+
+// GetById request
+message GetByIdRequest {
+  string id = 1;
+}
+
+message GetByNameRequest {
+  string name = 1;
+}
+
+message SendEmailWithTemplateRequest {
+  string template_name = 1;
+  EmailDto email = 2;
+  map<string, string> placeholders = 3;
+
+}
+
+
+message Empty {}
+
+// ========== Email Service ==========
+service EmailService {
+  // Campaign operations 
+  rpc CreateCampaign(CampaignDto) returns (CampaignDto);
+  rpc GetCampaigns(GetCampaignsRequest) returns (CampaignDtoList);
+
+  // Template operations 
+  rpc CreateTemplate(TemplateDto) returns (TemplateDto);
+  rpc GetTemplateById(GetByIdRequest) returns (TemplateDto);
+  rpc UpdateTemplate(TemplateDto) returns (TemplateDto);
+  rpc DeleteTemplate(DeleteRequest) returns (Empty);
+  rpc GetTemplates(GetTemplatesRequest) returns (TemplateDtoList);
+  rpc GetTemplateByName(GetByNameRequest) returns (TemplateDto);
+
+  // Email operation 
+  rpc CreateEmail(EmailDto) returns (EmailDto);
+  rpc SendEmailWithTemplate(SendEmailWithTemplateRequest) returns (EmailDto);
+
+}
+

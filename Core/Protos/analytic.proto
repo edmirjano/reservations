@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package analytic;
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "AnalyticService";
+
+message EventDto {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string user_id = 4;
+  string ip = 5;
+  string url = 6;
+  string platform = 7;
+  string app = 8;
+  string app_version = 9;
+  double latitude = 10;
+  double longitude = 11;
+  google.protobuf.Timestamp date = 12;
+  bool is_error = 13;
+  string data = 14;
+  string location = 15;
+}
+
+message EventDtoList {
+  repeated EventDto events = 1;
+}
+
+message Empty {}
+
+service AnalyticService {
+  rpc SaveEvent(EventDto) returns (EventDto);
+  rpc GetEvents(Empty) returns (EventDtoList);
+}

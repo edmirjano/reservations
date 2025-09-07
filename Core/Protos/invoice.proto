@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package payment;
+
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "PaymentService";
+
+// Request to create a cash invoice
+message CreateCashInvoiceRequest {
+  string transactionId = 1;
+  string customerName = 2;
+  string customerIdentification = 3;
+  string customerAddress = 4;
+  string customerCity = 5;
+  string customerCountry = 6;
+  string notes = 7;
+  repeated InvoiceItemDTO items = 8;
+}
+
+// Request to get invoices with various filters
+message GetInvoicesRequest {
+  string organizationId = 1;
+  string userId = 2;
+  string transactionId = 3;
+  string referenceId = 4;
+  string referenceType = 5;
+  string status = 6;
+  string invoiceType = 7;
+  string startDate = 8;
+  string endDate = 9;
+  string orderBy = 10;
+  int32 page = 11;
+  int32 perPage = 12;
+}
+
+// Response with a list of invoices
+message InvoiceDTOList {
+  repeated InvoiceDTO invoices = 1;
+}
+
+// Response with PDF content for an invoice
+message InvoicePdfResponse {
+  string pdfContent = 1; // Base64 encoded PDF
+  string pdfUrl = 2;
+  string invoiceId = 3;
+  string invoiceNumber = 4;
+}
+
+// DTO for Invoice
+message InvoiceDTO {
+  string id = 1;
+  string userId = 2;
+  string organizationId = 3;
+  string transactionId = 4;
+  string referenceId = 5;
+  string referenceType = 6;
+  string invoiceNumber = 7;
+  string invoiceDate = 8;
+  string dueDate = 9;
+  double totalAmount = 10;
+  string currency = 11;
+  string pdfUrl = 12;
+  string notes = 13;
+  string invoiceType = 14;
+  string status = 15;
+  string devPosInvoiceId = 16;
+  string devPosInvoiceNumber = 17;
+  string devPosResponse = 18;
+  string createdAt = 19;
+  string updatedAt = 20;
+  bool isActive = 21;
+  bool isDeleted = 22;
+  repeated InvoiceItemDTO items = 23;
+}
+
+// DTO for Invoice Item
+message InvoiceItemDTO {
+  string id = 1;
+  string invoiceId = 2;
+  string description = 3;
+  double quantity = 4;
+  double unitPrice = 5;
+  double discount = 6;
+  double taxRate = 7;
+  double taxAmount = 8;
+  double totalAmount = 9;
+  string sku = 10;
+  string createdAt = 11;
+  string updatedAt = 12;
+  bool isActive = 13;
+  bool isDeleted = 14;
+}

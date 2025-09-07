@@ -1,0 +1,258 @@
+syntax = "proto3";
+
+package auth;
+
+option csharp_namespace = "AuthService";
+
+message UserRegisterDto {
+  string name = 1;
+  string surname = 2;
+  string password = 3;
+  string email = 4;
+  string phoneNumber = 5;
+  string oneTimePassword = 6;
+  string notificationId = 7;
+  string roleId = 8;
+}
+
+message UserDto {
+  string id = 1;
+  string username = 2;
+  string password = 3;
+  string RoleId = 4;
+  string StatusId = 5;
+  string email = 6;
+  string phoneNumber = 7;
+  string oneTimePassword = 8;
+  string notificationId = 9;
+  string provider = 10;
+  RoleDto role = 11;
+  StatusDto status = 12;
+  DetailDto detail = 13;
+  PreferenceDto preference = 14;
+  string app = 15;
+}
+
+message UserProfileDto {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string phoneNumber = 4;
+  string notificationId = 5;
+  string provider = 6;
+  RoleDto role = 7;
+  StatusDto status = 8;
+  DetailDto detail = 9;
+  PreferenceDto preference = 10;
+}
+
+message UserTokenDto {
+    AuthorizationDto authorization = 1;
+    UserDto user = 2;
+}
+
+message AuthorizationDto {
+  string accessToken = 1;
+  string refreshToken = 2;
+}
+
+message RoleDto {
+  string id = 1; 
+  string name = 2;
+}
+
+message RoleDtoList {
+  repeated RoleDto Roles = 1;
+}
+
+message StatusDto {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message StatusDtoList {
+  repeated StatusDto Statuses = 1;
+}
+
+message DetailDto {
+  string id = 1; // Using string for Guid
+  string userId = 2;
+  string firstName = 3;
+  string lastName = 4;
+  string country = 5;
+  string address = 6;
+  string birthDate = 7; // Using string for DateTime
+  string gender = 8;
+  int32 affiliatePoints = 9;
+  string preferredLocation = 10;
+  UserDto user = 11;
+  string photo = 12;
+}
+
+message DetailDtoList {
+  repeated DetailDto userDetails = 1;
+}
+
+message PreferenceDto {
+  string id = 1;
+  string userId = 2;
+  string language = 3;
+  string timeZone = 4;
+  string ipAddress = 5;
+  bool allowedNotification = 6;
+  bool allowedEmailNotification = 7;
+  bool allowedLocation = 8;
+  bool allowedCamera = 9;
+  bool isDarkMode = 10;
+  bool isAffiliate = 11;
+  UserDto user = 12;
+}
+
+message PreferenceDtoList {
+  repeated PreferenceDto userPreferences= 1;
+}
+
+message UpdateUserStatusDto {
+  string userId = 1;
+  string statusId = 2;
+}
+
+message ResetPasswordDto {
+  int32 id = 1;
+  string userId = 2;
+  string email = 3;
+  string expiryTime = 4;
+  UserDto user = 5;
+  string oneTimePassword = 6;
+  string newPassword = 7;
+}
+
+message ResetPasswordResponse {
+  string message = 1;
+}
+
+message Empty {}
+
+message TokenRequest {
+  string token = 1;
+}
+
+message TokenResponse {
+  bool IsValid = 1;
+  string Status = 2;
+  UserDto user = 3;
+}
+
+message UserDtoList {
+  repeated UserDto users = 1;
+}
+
+message AuthResponse {
+  string token = 1;
+  UserDto user = 2;
+}
+
+message UserProfileResponse {
+  UserDto user = 1;
+  DetailDto detail = 2;
+  PreferenceDto preference = 3;
+  RoleDto role = 4;
+}
+
+message IdOnly{
+  string Id = 1;
+}
+
+message UpdateNotificationDTO{
+  string notificationId = 1;
+  string userID = 2;
+}
+
+message SocialLoginDto {
+  string provider = 1;       
+  string accessToken = 2; 
+}
+
+message SocialLoginResponse {
+  UserDto user = 1;
+  UserTokenDto token = 2;
+}
+
+message RefreshTokenDto {
+  string id = 1;
+  string userId = 2;
+  string token = 3;
+  string expiryDate = 4;
+  UserDto user = 5;
+}
+
+message UpdateUserProfileDto {
+  DetailDto userDetail = 1;
+  PreferenceDto userPreference = 2;
+  UserUpdateDto userUpdate = 3;
+}
+
+message UserUpdateDto {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string phoneNumber = 4;
+  string notificationId = 5;
+}
+
+
+service AuthService {
+  rpc GetAllUsers (Empty) returns (UserDtoList);
+  rpc Register (UserRegisterDto) returns (UserTokenDto);
+  rpc Login (UserDto) returns (UserTokenDto);
+  rpc ResetPassword (ResetPasswordDto) returns (ResetPasswordResponse);
+  rpc GetUserFromToken (TokenRequest) returns (UserDto);
+  rpc CheckTokenAndGetUser (TokenRequest) returns (TokenResponse);
+  rpc GetUserProfile (TokenRequest) returns (UserDto);
+  rpc GetUserById (UserDto) returns (UserDto);
+  rpc GetUserByUsername (UserDto) returns (UserDto);
+  rpc GetUserByEmail (UserDto) returns (UserDto);
+  rpc RefreshToken (AuthorizationDto) returns (UserTokenDto);
+  rpc SocialLogin (SocialLoginDto) returns (UserTokenDto);
+  rpc RegisterOrganizationUser (UserRegisterDto) returns (UserTokenDto);
+  rpc UpdateUser (UserUpdateDto) returns (UserDto);
+
+  // UserDetail methods
+  rpc GetAllUserDetails (Empty) returns (DetailDtoList);
+  rpc GetUserDetail (IdOnly) returns (DetailDto);
+  rpc GetUserDetailByUserId (IdOnly) returns (DetailDto);
+  rpc UpdateUserDetail (DetailDto) returns (DetailDto);
+  rpc UpdateUserDetailByUserId (DetailDto) returns (DetailDto);
+  rpc CreateUserDetail (DetailDto) returns (DetailDto);
+  rpc DeleteUserDetail (DetailDto) returns (DetailDto);
+
+  // UserPreference methods
+  rpc GetAllUserPreferences (Empty) returns (PreferenceDtoList);
+  rpc GetUserPreference (IdOnly) returns (PreferenceDto);
+  rpc GetUserPreferenceByUserId (IdOnly) returns (PreferenceDto);
+  rpc UpdateUserPreference (PreferenceDto) returns (PreferenceDto);
+  rpc UpdateUserPreferenceByUserId (PreferenceDto) returns (PreferenceDto);
+  rpc CreateUserPreference (PreferenceDto) returns (PreferenceDto);
+  rpc DeleteUserPreference (PreferenceDto) returns (PreferenceDto);
+
+  // UserRole methods
+  rpc GetAllUserRoles (Empty) returns (RoleDtoList);
+  rpc GetUserRole (IdOnly) returns (RoleDto);
+  rpc GetUserRoleByName (RoleDto) returns (RoleDto);
+  rpc UpdateUserRole (RoleDto) returns (RoleDto);
+  rpc CreateUserRole (RoleDto) returns (RoleDto);
+  rpc DeleteUserRole (RoleDto) returns (RoleDto);
+
+  // Status methods
+  rpc GetAllStatuses (Empty) returns (StatusDtoList);
+  rpc GetStatus (IdOnly) returns (StatusDto);
+  rpc CreateStatus (StatusDto) returns (StatusDto);
+  rpc UpdateStatus (StatusDto) returns (StatusDto);
+  rpc DeleteStatus (StatusDto) returns (StatusDto);
+  rpc UpdateUserStatus (UpdateUserStatusDto) returns (UserDto);
+
+  rpc GetUserProfileById (IdOnly) returns (UserProfileDto);
+  rpc UpdateNotification(UpdateNotificationDTO) returns(UserDto);
+  rpc DeleteUser (UserDto) returns (UserDto);
+}

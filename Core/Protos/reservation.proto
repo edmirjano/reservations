@@ -1,0 +1,234 @@
+syntax = "proto3";
+import "auth.proto";
+import "google/protobuf/wrappers.proto";
+import "organization.proto"; 
+
+package reservation;
+option csharp_namespace = "ReservationService";
+
+
+message DetailDTO {
+    string name = 1;
+    string email = 2;
+    string phone = 3;
+    int32 numberOfAdults = 4;
+    int32 numberOfChildren = 5;
+    int32 numberOfInfants = 6;
+    int32 numberOfPets = 7;
+    int32 resourceQuantity = 8;
+    string note = 9;
+    double originalPrice = 10;
+    double discount = 11;
+    string currency = 12;
+}
+
+message ReservationDTO {
+    string id = 1;
+    string userId = 2;
+    string organizationId = 3;
+    string StatusId = 4;
+    double totalAmount = 5;
+    string code = 6;
+    string startDate = 7;
+    string endDate = 8;
+    string source = 9;
+    DetailDTO detail = 10;
+    auth.UserProfileDto userProfile = 11;
+    repeated string resourceIds = 12;
+    repeated ResourceItemDto resources = 13;
+    string color = 14;
+    organization.OrganizationDTO organization = 15;
+}
+
+message ResourceItemDto {
+    string id = 1;
+    double price = 2;
+    string date = 3;
+    int32 quantity = 4;
+    string slug = 5;
+    string number = 6;
+}
+
+message CreateReservationDto {
+     string userId = 1;
+     string organizationId = 2;
+     repeated ResourceItemDto resources = 3;
+     string couponCode = 4;
+     string notes = 5;
+     double totalAmount = 6;
+     string startDate = 7;
+     string endDate = 8;
+     DetailDTO detail = 9;
+     string source = 10;
+ }
+
+message CreateReservationForOrganizationDto {
+    string userId = 1;
+    string organizationId = 2;
+    string notes = 3;
+    string startDate = 4;
+    string endDate =5;
+    repeated ResourceItemDto resources = 6;
+    string paymentTypeId = 7;
+    double totalAmount = 8;
+    string customerName = 9;
+    string email = 10;
+    string phone = 11;
+    string currency = 12;
+    string slug = 13;
+    string statusId = 14;
+}
+
+message GetReservationsRequest {
+    string keyword = 1;
+    int32 page = 2;
+    int32 perPage = 3;
+    string orderBy = 4;
+    string userId = 5;
+    string organizationId = 6;
+    string startDate = 7;   
+    string endDate = 8;   
+    bool withOrganizations = 9;
+}
+
+message ReservationDTOList {
+    repeated ReservationDTO reservations = 1;
+}
+
+message GetByIdRequest {
+    string id = 1;
+}
+
+message GetByCodeRequest {
+    string code = 1;
+}
+message Empty {}
+
+message StatusDTO {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    string statusColor = 4;
+}
+
+message GetStatusesRequest {
+    string keyword = 1;
+    int32 page = 2;
+    int32 perPage = 3;
+    string orderBy = 4;
+}
+
+message StatusDTOList {
+    repeated StatusDTO statuses = 1;
+}
+
+message GetStatsRequest {
+    string organizationId = 1;
+    string startDate = 2; 
+    string endDate = 3;   
+    string userId = 4;
+}
+
+message GetStatsResponse {
+    google.protobuf.Int32Value totalReservations = 1;
+    google.protobuf.DoubleValue totalEarnings = 2;
+    google.protobuf.DoubleValue averageDailyEarnings = 3;
+}
+
+message DateRangeRequest {
+    string organizationId = 1;
+    string startDate = 2;
+    string endDate = 3;
+}
+
+message DateReservationCountDTO {
+    string date = 1;
+    int32 reservationCount = 2;
+}
+
+message DateReservationCountList {
+    repeated DateReservationCountDTO dateReservationCounts = 1;
+}
+
+message GetReservationsByResourcesRequest {
+  repeated string resourceIds = 1;
+  string startDate = 2;
+  string endDate = 3;
+}
+
+message GetReservationsByResourcesResponse {
+  repeated ReservationDTO reservations = 1;
+}
+
+message SearchClientsRequest {
+  string name_query = 1;
+  string organization_id = 2;
+  int32 max_results = 3;
+}
+
+message ClientSuggestion {
+  string name = 1;
+  string phone = 2;
+  string email = 3;
+  string most_recent_reservation_date = 4;
+}
+
+message SearchClientsResponse {
+  repeated ClientSuggestion clients = 1;
+}
+
+message GetReservationsBySourceCountRequest {
+    string organizationId = 1;
+    string startDate = 2;
+    string endDate = 3;
+}
+
+message GetReservationsBySourceCountResponse {
+    int32 totalReservationsClient = 1;
+    int32 totalReservationsBusiness = 2;
+}
+
+message GenerateReservationReportRequest {
+  string organizationId = 1;
+  string startDate = 2;
+  string endDate = 3;
+}
+
+message GenerateReservationReportResponse {
+  bytes fileContent = 1;
+  string fileName = 2;
+}
+
+service ReservationService {
+    // reservations
+    rpc CreateReservation(CreateReservationDto) returns (ReservationDTO);
+    rpc CreateReservationForOrganization(CreateReservationForOrganizationDto) returns (ReservationDTO);
+    rpc UpdateReservation(ReservationDTO) returns (ReservationDTO);
+    rpc UpdateReservationForOrganization(ReservationDTO) returns (ReservationDTO);
+    rpc DeleteReservation(ReservationDTO) returns (Empty);
+    rpc GetReservationById(GetByIdRequest) returns (ReservationDTO);
+    rpc GetReservations(GetReservationsRequest) returns (ReservationDTOList);
+    rpc GetReservationsCountPerDay(DateRangeRequest) returns (DateReservationCountList);
+    rpc ValidateTicket(GetByCodeRequest) returns (ReservationDTO);
+    rpc GetReservationByResourceId(GetByIdRequest) returns (ReservationDTO);
+    rpc GetReservationsByResources(GetReservationsByResourcesRequest) returns (GetReservationsByResourcesResponse);
+
+    // details
+    rpc GetReservationDetailById(GetByIdRequest) returns (DetailDTO);
+    // statuses
+    rpc CreateStatus(StatusDTO) returns (StatusDTO);
+    rpc UpdateStatus(StatusDTO) returns (StatusDTO);
+    rpc DeleteStatus(StatusDTO) returns (Empty);
+    rpc GetStatusById(GetByIdRequest) returns (StatusDTO);
+    rpc GetStatuses(GetStatusesRequest) returns (StatusDTOList);
+    rpc GetStats(GetStatsRequest) returns (GetStatsResponse);
+
+    // Client autocomplete
+    rpc SearchClientsByName(SearchClientsRequest) returns (SearchClientsResponse);
+
+    // Source count
+    rpc GetReservationsBySourceCount(GetReservationsBySourceCountRequest) returns (GetReservationsBySourceCountResponse);
+
+    // Reservation report
+    rpc GenerateReservationReport(GenerateReservationReportRequest) returns (GenerateReservationReportResponse);
+}

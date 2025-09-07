@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package config;
+
+option csharp_namespace = "ConfigService";
+import "google/protobuf/empty.proto";
+
+message ConfigDtoList {
+  repeated ConfigDto entries = 1;
+}
+
+message ConfigDto {
+  string key = 1;
+  string value = 2;
+  string description = 3;
+}
+
+message WebViewVersionDto
+{
+	string id = 1;
+	string path = 2;
+	string fileName = 3;
+	string version = 4;
+	string fileSize = 5;
+	bytes file_data = 6;
+	string fileType = 7;
+	string link = 8;
+}
+
+message WebViewVersionDtoList
+{
+	repeated WebViewVersionDto entries = 1;
+}
+
+message AdvertisementDto {
+  string text = 1;
+  string link = 2;
+  string image = 3;
+}
+
+message WeatherRequest {
+  string location = 1;
+  string date = 2;
+}
+
+message WeatherResponse {
+  string location = 1;
+  string date = 2;
+  double temperature = 3;
+  string condition = 4;
+  double lowTemperature = 5;
+  double highTemperature = 6;
+}
+
+message AdvertisementList {
+  repeated AdvertisementDto advertisements = 1;
+}
+
+message Empty {}
+
+message GetConfigsRequest {
+  string app = 1;  
+}
+
+// Service definition
+service ConfigService {
+  rpc GetConfigs(GetConfigsRequest) returns (ConfigDtoList);  
+  rpc GetAdvertisements(Empty) returns (AdvertisementList);
+  rpc GetWeather(WeatherRequest) returns (WeatherResponse);
+  rpc CreateWebViewVersion(WebViewVersionDto) returns(WebViewVersionDto);
+  rpc UpdateWebViewVersion(WebViewVersionDto) returns(WebViewVersionDto);
+  rpc GetVersionHistory(Empty) returns(WebViewVersionDtoList);
+  rpc GetActiveVersions(Empty) returns(WebViewVersionDtoList);
+  rpc RollbackVersion(WebViewVersionDto) returns(WebViewVersionDto);
+}

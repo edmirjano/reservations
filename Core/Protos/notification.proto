@@ -1,0 +1,153 @@
+syntax = "proto3";
+
+package notification;
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "NotificationService";
+
+// Campaign DTO
+message CampaignDto {
+  string id = 1;
+  string title = 2;
+  string body = 3;
+  string json_data_string = 4;
+  string sound = 5;
+  double delivery_rate = 6;
+  double receipt_rate = 7;
+  double open_rate = 8;
+}
+
+// Notification DTO
+message NotificationDto {
+  string id = 1;
+  string campaign_id = 2;
+  string user_id = 3;
+  string device_token = 4;
+  bool delivered = 5;
+  bool received = 6;
+  bool opened = 7;
+  string error = 8;
+  string message = 9;
+}
+
+// List of campaigns
+message CampaignDtoList {
+  repeated CampaignDto campaigns = 1;
+}
+
+// List of notifications
+message NotificationDtoList {
+  repeated NotificationDto notifications = 1;
+}
+
+// GetById request
+message GetByIdRequest {
+  string id = 1;
+}
+
+// Delete request
+message DeleteRequest {
+  string id = 1;
+}
+
+// Campaign-related requests
+message GetCampaignsRequest {
+  optional string id = 1;
+  optional string title = 2;
+  optional string body = 3;
+  optional string json_data_string = 4;
+  optional string sound = 5;
+  optional double delivery_rate = 6;
+  optional double receipt_rate = 7;
+  optional double open_rate = 8;
+}
+
+// Notification-related requests
+message GetNotificationsRequest {
+  optional string id = 1;
+  optional string campaign_id = 2;
+  optional string user_id = 3;
+  optional string device_token = 4;
+  optional bool delivered = 5;
+  optional bool received = 6;
+  optional bool opened = 7;
+  optional string error = 8;
+}
+
+// Create requests
+message CreateCampaignRequest {
+  CampaignDto campaign = 1;
+}
+
+message CreateNotificationRequest {
+  NotificationDto notification = 1;
+}
+
+// Empty message for delete responses
+message Empty {}
+
+// Order notification DTOs
+message OrderNotificationDto {
+  string orderId = 1;
+  string organizationId = 2;
+  string resourceNumber = 3;
+  repeated OrderItemDto items = 4;
+  double totalPrice = 5;
+}
+
+message OrderItemDto {
+  int32 quantity = 1;
+  string productName = 2;
+}
+
+// Order status change notification DTO
+message OrderStatusChangeNotificationDto {
+  string orderId = 1;
+  string organizationId = 2;
+  string resourceNumber = 3;
+  string oldStatus = 4;
+  string newStatus = 5;
+  repeated OrderItemDto items = 6;
+  double totalPrice = 7;
+}
+
+// Reservation payment notification DTO
+message ReservationPaymentNotificationDto {
+  string reservationId = 1;
+  string organizationId = 2;
+  string resourceNumber = 3;
+  string customerName = 4;
+  string customerEmail = 5;
+  string customerPhone = 6;
+  string startDate = 7;
+  string endDate = 8;
+  double totalAmount = 9;
+  string paymentMethod = 10;
+  string reservationCode = 11;
+}
+
+// Notification Service
+service NotificationService {
+  // Campaign operations
+  rpc CreateCampaign(CampaignDto) returns (CampaignDto);
+  rpc GetCampaignById(GetByIdRequest) returns (CampaignDto);
+  rpc UpdateCampaign(CampaignDto) returns (CampaignDto);
+  rpc DeleteCampaign(DeleteRequest) returns (Empty);
+  rpc GetCampaigns(GetCampaignsRequest) returns (CampaignDtoList);
+
+  // Notification operations
+  rpc CreateNotification(NotificationDto) returns (NotificationDto);
+  rpc GetNotificationById(GetByIdRequest) returns (NotificationDto);
+  rpc UpdateNotification(NotificationDto) returns (NotificationDto);
+  rpc DeleteNotification(DeleteRequest) returns (Empty);
+  rpc GetNotifications(GetNotificationsRequest) returns (NotificationDtoList);
+  
+  // Order notification
+  rpc SendOrderNotification(OrderNotificationDto) returns (Empty);
+  
+  // Order status change notification
+  rpc SendOrderStatusChangeNotification(OrderStatusChangeNotificationDto) returns (Empty);
+  
+  // Reservation payment notification
+  rpc SendReservationPaymentNotification(ReservationPaymentNotificationDto) returns (Empty);
+}

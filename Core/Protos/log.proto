@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+option csharp_namespace = "LogService";
+
+package log;
+
+service LogService {
+  // Create a new log entry
+  rpc CreateLog (CreateLogRequest) returns (LogResponse);
+  
+  // Get log entries with filtering
+  rpc GetLogs (GetLogsRequest) returns (LogsResponse);
+  
+  // Get log by ID
+  rpc GetLogById (GetLogByIdRequest) returns (LogResponse);
+  
+  // Delete log entry
+  rpc DeleteLog (DeleteLogRequest) returns (DeleteLogResponse);
+}
+
+// Log level enum
+enum LogLevel {
+  DEBUG = 0;
+  INFO = 1;
+  WARNING = 2;
+  ERROR = 3;
+  CRITICAL = 4;
+}
+
+// Request to create a new log
+message CreateLogRequest {
+  string service_name = 1;
+  string message = 2;
+  LogLevel level = 3;
+  string details = 4;
+  string user_id = 5;
+  string request_id = 6;
+}
+
+// Response with a single log
+message LogResponse {
+  string id = 1;
+  string service_name = 2;
+  string message = 3;
+  LogLevel level = 4;
+  string details = 5;
+  string user_id = 6;
+  string request_id = 7;
+  string created_at = 8;
+}
+
+// Request to get logs with filtering
+message GetLogsRequest {
+  string service_name = 1;
+  LogLevel level = 2;
+  string user_id = 3;
+  string request_id = 4;
+  string from_date = 5;
+  string to_date = 6;
+  int32 page = 7;
+  int32 page_size = 8;
+}
+
+// Response with multiple logs
+message LogsResponse {
+  repeated LogResponse logs = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// Request to get log by ID
+message GetLogByIdRequest {
+  string id = 1;
+}
+
+// Request to delete a log
+message DeleteLogRequest {
+  string id = 1;
+}
+
+// Response for delete operation
+message DeleteLogResponse {
+  bool success = 1;
+  string message = 2;
+}

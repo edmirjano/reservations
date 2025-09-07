@@ -1,0 +1,282 @@
+syntax = "proto3";
+
+package payment;
+
+option csharp_namespace = "PaymentService";
+
+message FullPriceDTO {
+    double originalPrice = 1;
+    double fullPrice = 2;
+    double organizationCommission = 3;
+    double clientCommission = 4;
+    double serviceFee = 5;
+    double fullPriceExcludedClientCommission = 6;
+    double fullPriceExcludedOrganizationCommission = 7;
+    double vatTax = 8;
+    double vatAmount = 9;
+    double priceBeforeVat = 10;
+    double clientNetValue = 11;
+    double clientGrossValue = 12;
+    double organizationNetValue = 13;
+    double organizationGrossValue = 14;
+    double platformNetProfit = 15;
+    optional double discountedPrice = 16;
+    optional double discountPercentage = 17;
+    optional string discountDescription = 18;
+    optional string organizationName = 19;
+}
+
+message TransactionDTO {
+  string id = 1;
+  string organizationId = 2;
+  string userId = 3;
+  string referenceId = 4;
+  string referenceType = 5;
+  double totalValue = 6;
+  string description = 7;
+  double resourceNetValue = 8;
+  double resourceNetCommission = 9;
+  double resourceGrossValue = 10;
+  double resourceGrossCommission = 11;
+  double serviceFee = 12;
+  double serviceFeePercentage = 13;
+  double paymentProcessorFee = 14;
+  double paymentProcessorPercentageFee = 15;
+  double paymentProcessorFixedFee = 16;
+  double paymentProcessorInternationalFee = 17;
+  double paymentProcessorCurrencyConversionFee = 18;
+  double paymentProcessorFeePercentage = 19;
+  double clientNetCommission = 20;
+  double clientGrossCommission = 21;
+  double clientCommissionPercentage = 22;
+  double organizationNetCommission = 23;
+  double organizationGrossCommission = 24;
+  double organizationCommissionPercentage = 25;
+  double fullGrossCommission = 26;
+  double organizationNetValue = 27;
+  double organizationGrossValue = 28;
+  double clientNetValue = 29;
+  double clientGrossValue = 30;
+  double platformNetProfit = 31;
+  string currency = 32;
+  string status = 33;
+  optional string paymentMethod = 34;
+  optional string paymentProcessorTransactionId = 35;
+  optional string paymentProcessorIntentId = 36;
+  optional string paymentProcessorCustomerId = 37;
+  optional string paymentProcessorPaymentMethodId = 38;
+  optional string paymentProcessorMetadata = 39;
+  bool isRefund = 40;
+  string refundReason = 41;
+  string refundDescription = 42;
+  string refundDate = 43;
+  string originalTransactionId = 44;
+  double refundAmount = 45;
+  string processorTransactionDate = 46;
+  double vatRate = 47;
+  double vatAmount = 48;
+  double subtotalBeforeVat = 49;
+}
+
+message GetTransactionsRequest {
+  optional string organizationId = 1;
+  optional string userId = 2;
+  optional string transactionType = 3;
+  optional string status = 4;
+  optional string startDate = 5;
+  optional string endDate = 6;
+  optional int32 page = 7;
+  optional int32 perPage = 8;
+  optional string orderBy = 9;
+}
+
+message GetPriceRequest {
+  string date = 1;
+  double originalPrice = 2;
+}
+
+message ResourcePriceRequest {
+    string date = 1;
+    double originalPrice = 2;
+    string organizationId = 3;
+    string resourceNumber = 4;
+}
+
+message GetFullPricesRequest {
+    repeated ResourcePriceRequest resources = 1;
+}
+
+message FullPriceDTOList {
+    repeated FullPriceDTO prices = 1;
+}
+
+message TransactionDTOList {
+  repeated TransactionDTO transactions = 1;
+}
+
+message PaymentIntentRequest {
+  string organizationId = 1;
+  optional string userId = 2;
+  double amount = 3;
+  string currency = 4;
+  string description = 5;
+  string referenceId = 6;
+
+}
+
+message PaymentIntentResponse {
+  string clientSecret = 1;
+  string intentId = 2;
+}
+
+message PaymentStatusRequest {
+  string intentId = 1;
+  string transactionId = 2;
+}
+
+message PaymentStatusResponse {
+  string status = 1;  
+}
+
+message WebhookPaymentUpdateRequest {
+  string stripeSignatureHeader = 1;
+  string requestBody = 2;  
+}
+
+message Empty {}
+
+// Invoice related messages
+message CreateCashInvoiceRequest {
+  string transactionId = 1;
+  string customerName = 2;
+  string customerIdentification = 3;
+  string customerAddress = 4;
+  string customerCity = 5;
+  string customerCountry = 6;
+  string notes = 7;
+  repeated InvoiceItemDTO items = 8;
+}
+
+message GetInvoicesRequest {
+  optional string organizationId = 1;
+  optional string userId = 2;
+  optional string transactionId = 3;
+  optional string referenceId = 4;
+  optional string referenceType = 5;
+  optional string status = 6;
+  optional string invoiceType = 7;
+  optional string startDate = 8;
+  optional string endDate = 9;
+  optional string orderBy = 10;
+  optional int32 page = 11;
+  optional int32 perPage = 12;
+}
+
+message InvoiceItemDTO {
+  string id = 1;
+  string invoiceId = 2;
+  string description = 3;
+  double quantity = 4;
+  double unitPrice = 5;
+  double discount = 6;
+  double taxRate = 7;
+  double taxAmount = 8;
+  double totalAmount = 9;
+  string sku = 10;
+  string createdAt = 11;
+  string updatedAt = 12;
+  bool isActive = 13;
+  bool isDeleted = 14;
+}
+
+message InvoiceDTO {
+  string id = 1;
+  string userId = 2;
+  string organizationId = 3;
+  string transactionId = 4;
+  string referenceId = 5;
+  string referenceType = 6;
+  string invoiceNumber = 7;
+  string invoiceDate = 8;
+  string dueDate = 9;
+  double totalAmount = 10;
+  string currency = 11;
+  string pdfUrl = 12;
+  string notes = 13;
+  string invoiceType = 14;
+  string status = 15;
+  string devPosInvoiceId = 16;
+  string devPosInvoiceNumber = 17;
+  string devPosResponse = 18;
+  string createdAt = 19;
+  string updatedAt = 20;
+  bool isActive = 21;
+  bool isDeleted = 22;
+  repeated InvoiceItemDTO items = 23;
+}
+
+message SummaryInvoiceDTO{
+  string pdfUrl = 1;
+}
+
+message InvoicePdfResponse {
+  string pdfContent = 1; // Base64 encoded PDF
+  string pdfUrl = 2;
+  string invoiceId = 3;
+  string invoiceNumber = 4;
+}
+
+message InvoiceDTOList {
+  repeated InvoiceDTO invoices = 1;
+}
+
+
+message ResourceDTO {
+  string id = 1;
+  string organizationId = 2;
+  string typeId = 3;
+  string statusId = 4;
+  string categoryId = 5;
+  string subcategoryId = 6;
+  double price = 7;
+  string currency = 8;
+  string number = 9;
+  double latitude = 10;
+  double longitude = 11;
+  string slug = 12;
+  string sectionId = 13;
+  optional double afternoonPrice = 14;
+}
+
+message DEVPOSInvoiceDTO{
+  repeated ResourceDTO resources = 1;
+}
+
+service PaymentService {
+  // Transaction Management
+  rpc CreateTransaction(TransactionDTO) returns (TransactionDTO);
+  rpc UpdateTransaction(TransactionDTO) returns (TransactionDTO);
+  rpc DeleteTransaction(TransactionDTO) returns (Empty);
+  rpc GetTransactionById(TransactionDTO) returns (TransactionDTO);
+  rpc GetTransactions(GetTransactionsRequest) returns (TransactionDTOList);
+  rpc GetFullPrice(GetPriceRequest) returns (FullPriceDTO);
+  rpc GetFullPrices(GetFullPricesRequest) returns (FullPriceDTOList);
+
+  // Payment Processing
+  rpc CreatePaymentIntent(PaymentIntentRequest) returns (PaymentIntentResponse);  
+  rpc GetPaymentStatus(PaymentStatusRequest) returns (PaymentStatusResponse);  
+  rpc WebhookPaymentUpdate(WebhookPaymentUpdateRequest) returns (Empty);
+
+  // Invoice Management
+  rpc CreateInvoice(DEVPOSInvoiceDTO) returns (InvoiceDTO);
+  rpc CreateInvoiceSummary(DEVPOSInvoiceDTO) returns (SummaryInvoiceDTO);
+  rpc CreateInvoiceDEVPOS(DEVPOSInvoiceDTO) returns (DEVPOSInvoiceDTO);
+  rpc UpdateInvoice(InvoiceDTO) returns (InvoiceDTO);
+  rpc DeleteInvoice(InvoiceDTO) returns (Empty);
+  rpc GetInvoiceById(InvoiceDTO) returns (InvoiceDTO);
+  rpc GetInvoices(GetInvoicesRequest) returns (InvoiceDTOList);
+  rpc CreateCashInvoice(CreateCashInvoiceRequest) returns (InvoiceDTO);
+  rpc GetInvoicePdf(InvoiceDTO) returns (InvoicePdfResponse);
+  rpc GetInvoicesByOrganization(GetInvoicesRequest) returns (InvoiceDTOList);
+
+}
