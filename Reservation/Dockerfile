@@ -1,5 +1,5 @@
 ﻿# Use the official ASP.NET Core runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 
 # Set environment variables with defaults
 ENV DB_HOST="" \

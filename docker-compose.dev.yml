@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: reservation
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
@@ -46,7 +46,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DB_HOST=postgres
-      - ConnectionStrings__DB_PORT=5432
+      - ConnectionStrings__DB_PORT=5433
       - ConnectionStrings__DB_NAME=reservation
       - ConnectionStrings__DB_USER=reservation
       - ConnectionStrings__DB_PASSWORD=reservation

@@ -1,0 +1,162 @@
+﻿version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: reservation-postgres
+    environment:
+      POSTGRES_DB: reservation
+      POSTGRES_USER: reservation
+      POSTGRES_PASSWORD: reservation123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reservation"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - reservation_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: reservation-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - reservation_network
+
+  reservation:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: reservation-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=reservation
+      - DB_USER=reservation
+      - DB_PASSWORD=reservation123
+      - ConnectionStrings__Redis=redis:6379
+      - Services__Auth=http://auth:5001
+      - Services__Payment=http://payment:5010
+      - Services__Resource=http://resource:5002
+      - Services__Organization=http://organization:5004
+      - Services__Email=http://email:5006
+      - Urls__Server=0.0.0.0
+      - Urls__Port=80
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "5000:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - reservation_network
+    restart: unless-stopped
+
+  # Mock external services for testing
+  auth:
+    image: mockserver/mockserver:latest
+    container_name: mock-auth
+    ports:
+      - "5001:1080"
+    environment:
+      - MOCKSERVER_WATCH_INITIALIZATION_JSON=true
+    networks:
+      - reservation_network
+
+  payment:
+    image: mockserver/mockserver:latest
+    container_name: mock-payment
+    ports:
+      - "5010:1080"
+    environment:
+      - MOCKSERVER_WATCH_INITIALIZATION_JSON=true
+    networks:
+      - reservation_network
+
+  resource:
+    image: mockserver/mockserver:latest
+    container_name: mock-resource
+    ports:
+      - "5002:1080"
+    environment:
+      - MOCKSERVER_WATCH_INITIALIZATION_JSON=true
+    networks:
+      - reservation_network
+
+  organization:
+    image: mockserver/mockserver:latest
+    container_name: mock-organization
+    ports:
+      - "5004:1080"
+    environment:
+      - MOCKSERVER_WATCH_INITIALIZATION_JSON=true
+    networks:
+      - reservation_network
+
+  email:
+    image: mockserver/mockserver:latest
+    container_name: mock-email
+    ports:
+      - "5006:1080"
+    environment:
+      - MOCKSERVER_WATCH_INITIALIZATION_JSON=true
+    networks:
+      - reservation_network
+
+  # Database admin tools
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: reservation-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@reservation.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+    networks:
+      - reservation_network
+
+  # Redis admin
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: reservation-redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - reservation_network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  reservation_network:
+    driver: bridge
